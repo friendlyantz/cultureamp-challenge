@@ -1,17 +1,19 @@
-require "cli"
+# frozen_string_literal: true
+
+require 'cli'
 
 RSpec.describe CLI do
-  it "parses the input file and writes to the output stream" do
-    args = ["../../example-data/survey.csv", "participation"]
+  it 'parses the input file and writes to the output stream' do
+    args = ['../../example-data/survey.csv', 'participation']
 
     output = StringIO.new
 
-    expected_output = <<~EOF
+    expected_output = <<~EXPECTED_OUTPUT
       Participation
 
       Participants: 6
       Submitted: 5 (83.3%)
-    EOF
+    EXPECTED_OUTPUT
 
     CLI.new.call(arguments: args, out: output)
 
