@@ -32,6 +32,8 @@ module Services
     end
 
     def search_index(record:, paths:)
+      # require 'pry'
+      # binding.pry
       data.dig(record, 'index', *paths).to_a
     end
 
