@@ -28,8 +28,21 @@ make lint-checkonly           check lintintg
 make ci                       ci to check linting and run tests
 ```
 
-### Running
+# Action Plan / Tracker
 
-``` sh
-./bin/survey-tool
-```
+- [x] Clarify functional / non-functional requirements, brainstorm MVP solution as well as potential future Features
+- [ ] Outline Strategy
+    - [ ] Design Patterns
+    - [ ] Outline basic models / objects, Data Storage and retrieval
+    - [ ] Consider O(n) vs O(logn) vs O(1) implementations of Search algorithm
+    - [ ] Consider Data Indexing algorithms
+- [ ] Spike
+- [ ] Implement/TDD data models and storage
+- [ ] Implement/TDD search engine
+- [ ] Implement/TDD cli
+
+- [ ] OPT: Explore Data encoding alternatives: `protobuf`, `avro` (avro_turf / avro gems) -> I recently contributed to an OSS project `avro_turf` for data encoding managed by a `ZenDeski` engineer -> https://github.com/dasch/avro_turf/pull/194#event-10218602164
+- [x] OPT: GitHub Actions CI/CD
+- [ ] Consider multi-column index
+- [ ] OPT: Deploy
+- [ ] OPT: Linting - return to default Rubocop settings

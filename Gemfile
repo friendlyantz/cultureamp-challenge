@@ -20,4 +20,6 @@ group :development do
   gem 'rubocop', '~> 1.56', require: false
 end
 
-gem "colorize", "~> 1.1"
+gem 'colorize', '~> 1.1'
+
+gem 'ice_nine', '~> 0.11.2'
