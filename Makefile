@@ -36,8 +36,12 @@ lint-unsafe:
 lint-checkonly:
 	bundle exec rubocop
 
+.PHONY: audit-dependencies
+audit-dependencies:
+	bundle exec bundle-audit
+
 .PHONY: ci
-ci: lint-checkonly test
+ci: lint-checkonly audit-dependencies test
 
 .PHONY: usage
 usage:
@@ -52,5 +56,6 @@ usage:
 	@echo "${YELLOW}make lint${NC}                     lint app"
 	@echo "${YELLOW}make lint-unsafe${NC}              lint app(UNSAFE)"
 	@echo "${YELLOW}make lint-checkonly${NC}           check lintintg"
+	@echo "${YELLOW}make audit-dependencies${NC}       security audit of dependencies"
 	@echo "${YELLOW}make ci${NC}                       ci to check linting and run tests"
 	@echo
