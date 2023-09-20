@@ -12,7 +12,7 @@ RSpec.describe Services::GenerateDatabase do
     end
     # rubocop:disable Layout/LineLength:
     let(:survey_csv) do
-      <<~CSV
+      data = <<~CSV
         Email ,Employee Id,Submission time,I like the kind of work I do.,"In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective.",We are working at the right pace to meet our goals.,I feel empowered to get the work done for which I am responsible.,I am appropriately involved in decisions that affect my work.
         employee1@abc.xyz,1,2014-07-28T20:35:41+00:00,5,5,5,4,4
         ,2,2014-07-29T07:05:41+00:00,4,5,5,3,3
@@ -21,6 +21,7 @@ RSpec.describe Services::GenerateDatabase do
         ,5,2014-07-31T11:35:41+00:00,4,5,5,2,3
         employee5@abc.xyz,6,,,,,,
       CSV
+      CSV.parse(data, headers: true)
     end
 
     it 'returns a Success' do
@@ -123,11 +124,12 @@ RSpec.describe Services::GenerateDatabase do
 
     context 'when invalid attribute is provided' do
       let(:survey_csv) do
-        <<~CSV
+        data = <<~CSV
           NOTEmail ,Employee Id,Submission time,I like the kind of work I do.,"In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective.",We are working at the right pace to meet our goals.,I feel empowered to get the work done for which I am responsible.,I am appropriately involved in decisions that affect my work.
           employee1@abc.xyz,1,2014-07-28T20:35:41+00:00,5,5,5,4,4
           employee5@abc.xyz,6,,,,,,
         CSV
+        CSV.parse(data, headers: true)
       end
 
       it 'returns a failure' do
@@ -137,11 +139,13 @@ RSpec.describe Services::GenerateDatabase do
 
     context 'when invalid value type is provided' do
       let(:survey_csv) do
-        <<~CSV
-          NOTEmail ,Employee Id,Submission time,I like the kind of work I do.,"In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective.",We are working at the right pace to meet our goals.,I feel empowered to get the work done for which I am responsible.,I am appropriately involved in decisions that affect my work.
-          employee1@abc.xyz,1,XXXX-07-28T20:35:41+00:00,5,5,5,4,4
-          employee5@abc.xyz,6,,,,,,
-        CSV
+        data =
+          <<~CSV
+            NOTEmail ,Employee Id,Submission time,I like the kind of work I do.,"In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective.",We are working at the right pace to meet our goals.,I feel empowered to get the work done for which I am responsible.,I am appropriately involved in decisions that affect my work.
+            employee1@abc.xyz,1,NOT_TIME,5,5,5,4,4
+            employee5@abc.xyz,6,,,,,,
+          CSV
+        CSV.parse(data, headers: true)
       end
 
       it 'returns a failure' do
