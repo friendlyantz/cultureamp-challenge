@@ -6,9 +6,14 @@ Style/Documentation:
 RSpec/DescribedClass:
   Enabled: false
 
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
 RSpec/ExampleLength:
-  Exclude:
-    - 'spec/cli_spec.rb'
+  Enabled: false
 
 AllCops:
   NewCops: enable
