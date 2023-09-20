@@ -19,3 +19,5 @@ group :development do
   gem 'bundler-audit', require: false
   gem 'rubocop', '~> 1.56', require: false
 end
+
+gem "colorize", "~> 1.1"

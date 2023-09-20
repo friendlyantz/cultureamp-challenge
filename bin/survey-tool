@@ -3,4 +3,11 @@
 
 require File.join(__dir__, '../lib/cli')
 
-CLI.new.call
+require 'colorize'
+
+begin
+  CLI.new.call
+rescue Interrupt
+  puts "\nInterrupt Command received. Exiting...".light_red
+  exit 1
+end
