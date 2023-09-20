@@ -36,7 +36,8 @@ class Repo
   def search_surveys_associations(surveys)
     surveys.map do |survey|
       survey.add_references(
-        submitter: search_users('_id', survey.send(:'Employee Id')).first
+        # searching by primary key returns an array as a safety measure for nil / not found records
+        submitter: search_users('_id', survey.send(:'Employee Id').to_i).first
       )
     end
   end
@@ -52,7 +53,7 @@ class Repo
   def search_users_associations(users)
     users.map do |user|
       user.add_references(
-        submitted_surveys: search_surveys('Employee Id', user.send(:_id))
+        submitted_surveys: search_surveys('Employee Id', user.send(:_id).to_s)
       )
     end
   end

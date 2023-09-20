@@ -10,8 +10,8 @@ RSpec.describe Repo, type: :integration do
 
   let(:db_data) do
     {
-      'users' => { '777' => { '_id' => '777' },
-                   '999' => { '_id' => '999' } },
+      'users' => { 777 => { '_id' => 777 },
+                   999 => { '_id' => 999 } },
       'surveys' => {
         101 => survey_one_data,
         102 => survey_two_data,
@@ -62,7 +62,7 @@ RSpec.describe Repo, type: :integration do
         let(:value) { '777' }
 
         it 'returns Success monad with correct data' do
-          expected_user = Models::User.new({ '_id' => '777' })
+          expected_user = Models::User.new({ '_id' => 777 })
           expect(search_results).to be_a Dry::Monads::Result::Success
           expect(search_results.value!).to all(be_a(Models::Survey))
           expect(search_results.value!.size).to eq 1
@@ -84,10 +84,10 @@ RSpec.describe Repo, type: :integration do
     end
 
     context 'when searching for users' do
-      context "with _id '777'" do
+      context 'with _id 777 as integer' do
         let(:record) { 'users' }
         let(:search_term) { '_id' }
-        let(:value) { '777' }
+        let(:value) { 777 }
         let(:expected_surveys) { [Models::Survey.new(survey_one_data)] }
 
         it 'returns Success monad with correct data' do
@@ -101,7 +101,7 @@ RSpec.describe Repo, type: :integration do
       context 'with _id 999' do
         let(:record) { 'users' }
         let(:search_term) { '_id' }
-        let(:value) { '999' }
+        let(:value) { 999 }
 
         it 'returns Success monad with correct data' do
           expect(search_results).to be_a Dry::Monads::Result::Success
