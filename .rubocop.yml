@@ -3,4 +3,5 @@ Style/Documentation:
 
 AllCops:
   NewCops: enable
+  SuggestExtensions: false
    
