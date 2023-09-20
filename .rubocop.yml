@@ -3,6 +3,9 @@ require: rubocop-rspec
 Style/Documentation:
   Enabled: false
 
+Metrics/MethodLength:
+  Max: 15
+
 RSpec/DescribedClass:
   Enabled: false
 

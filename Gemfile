@@ -24,3 +24,5 @@ end
 gem 'colorize', '~> 1.1'
 
 gem 'ice_nine', '~> 0.11.2'
+
+gem 'dry-monads', '~> 1.6'
