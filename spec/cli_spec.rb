@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'cli'
-
 RSpec.describe CLI do
   it 'parses the input file and writes to the output stream' do
     pending

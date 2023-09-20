@@ -4,6 +4,7 @@ unless defined?(Zeitwerk)
   require 'zeitwerk'
   loader = Zeitwerk::Loader.new
   loader.push_dir('lib')
+  loader.inflector.inflect('cli' => 'CLI')
   loader.push_dir('example-data')
   loader.setup
 end
