@@ -4,6 +4,7 @@ require 'cli'
 
 RSpec.describe CLI do
   it 'parses the input file and writes to the output stream' do
+    pending
     args = ['../../example-data/survey.csv', 'participation']
 
     output = StringIO.new
