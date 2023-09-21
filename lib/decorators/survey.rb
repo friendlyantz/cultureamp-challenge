@@ -6,7 +6,7 @@ module Decorators
       def call(survey)
         string = ''
 
-        string += "==============\n"
+        string += "===================================\n"
         string += "* Survey for Employee #{survey.send(:'Employee Id')}\n"
         string += decorate_survey_data(survey)
 

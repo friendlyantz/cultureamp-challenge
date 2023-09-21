@@ -20,7 +20,7 @@ RSpec.describe Loaders::CLI do
     )
   end
   let(:list_records) { Success(['surveys']) }
-  let(:get_possible_terms_for) { Success(['name']) }
+  let(:get_possible_terms_for) { Success(%w[name ladida]) }
   let(:validate_search_term) { Success() }
   let(:search_for) { Success([1]) }
 
@@ -162,13 +162,16 @@ RSpec.describe Loaders::CLI do
 
     it 'outputs a welcome message' do
       enter_search_term
-      expect(output.string).to match <<~DOCS
-        Search surveys with:
-        _______________________
-        name
-        _______________________
-        Enter search term:
-      DOCS
+      expect(output.string).to match(
+        <<~DOCS
+          Select search option to search surveys with:
+          _______________________
+          Press 1 for....name
+          Press 2 for....ladida
+          _______________________
+          or just enter search term:
+        DOCS
+      )
     end
 
     context 'when search_engine.get_possible_terms_for returns a Failure' do
@@ -190,18 +193,36 @@ RSpec.describe Loaders::CLI do
     end
 
     context 'when entered input is valid' do
-      let(:input) { StringIO.new('name') }
+      context 'when typing search value manually' do
+        let(:input) { StringIO.new('name') }
 
-      it 'returns a success' do
-        expect(enter_search_term.success?).to be true
+        it 'returns a success' do
+          expect(enter_search_term.success?).to be true
+        end
+
+        it 'has the record, search_term, and next_command data' do
+          expect(enter_search_term.value!).to match({
+                                                      record: 'surveys',
+                                                      search_term: 'name',
+                                                      next_command: cli_command.method('enter_search_value')
+                                                    })
+        end
       end
 
-      it 'has the record, search_term, and next_command data' do
-        expect(enter_search_term.value!).to match({
-                                                    record: 'surveys',
-                                                    search_term: 'name',
-                                                    next_command: cli_command.method('enter_search_value')
-                                                  })
+      context 'when slecting a numbe1ed option' do
+        let(:input) { StringIO.new('2') }
+
+        it 'returns a success' do
+          expect(enter_search_term.success?).to be true
+        end
+
+        it 'has the record, search_term, and next_command data' do
+          expect(enter_search_term.value!).to match({
+                                                      record: 'surveys',
+                                                      search_term: 'ladida',
+                                                      next_command: cli_command.method('enter_search_value')
+                                                    })
+        end
       end
     end
 

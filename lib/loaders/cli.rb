@@ -48,11 +48,13 @@ module Loaders
 
     def enter_search_term(data)
       record = data[:record]
-      possible_terms = yield search_engine.get_possible_terms_for(record:)
-      print_enter_search_term_instruction(record, possible_terms)
+      mappings = yield generate_search_term_mappings(record)
 
       case input.gets.chomp
       in 'exit' then Failure(:exit)
+      in value if mappings[value.to_i]
+        search_term = mappings[value.to_i]
+        handle_search_term(record, search_term)
       in _ => search_term
         handle_search_term(record, search_term)
       end
@@ -84,6 +86,27 @@ module Loaders
 
     private
 
+    # rubocop:disable Metrics/AbcSize
+    def generate_search_term_mappings(record)
+      search_engine
+        .get_possible_terms_for(record:)
+        .fmap do |records|
+        mappings = {}
+
+        output.puts "Select search option to search #{record} with:"
+        output.puts '_______________________'
+        records.each_with_index do |column_name, index|
+          output.puts "Press #{index + 1} for".ljust(15, '.') + column_name.to_s
+          mappings[index + 1] = column_name
+        end
+        output.puts '_______________________'
+        output.puts 'or just enter search term:'
+
+        mappings
+      end
+    end
+    # rubocop:enable Metrics/AbcSize
+
     def generate_record_mappings
       search_engine
         .list_records
@@ -97,14 +120,6 @@ module Loaders
 
           mappings
         end
-    end
-
-    def print_enter_search_term_instruction(record, possible_terms)
-      output.puts "Search #{record} with:"
-      output.puts '_______________________'
-      output.puts possible_terms
-      output.puts '_______________________'
-      output.puts 'Enter search term:'
     end
 
     def handle_search_term(record, search_term)
