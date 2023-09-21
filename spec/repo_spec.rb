@@ -44,7 +44,6 @@ RSpec.describe Repo, type: :integration do
         .search(record:, search_term:, value:)
     end
 
-    # rubocop:disable RSpec/MultipleMemoizedHelpers
     context 'with invalid data' do
       let(:record) { 'not_surveys' }
       let(:search_term) { 'Employee Id' }
@@ -111,7 +110,6 @@ RSpec.describe Repo, type: :integration do
         end
       end
     end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     describe '#list_records' do
       it 'returns a Success monad with all the records' do

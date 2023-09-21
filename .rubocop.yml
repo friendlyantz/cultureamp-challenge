@@ -6,6 +6,9 @@ Style/Documentation:
 Metrics/MethodLength:
   Max: 15
 
+RSpec/MultipleMemoizedHelpers:
+  Max: 13
+
 RSpec/DescribedClass:
   Enabled: false
 

@@ -13,5 +13,9 @@ module Models
         )
       )
     end
+
+    def to_s(decorator = Decorators::Survey)
+      decorator.call(self)
+    end
   end
 end

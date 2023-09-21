@@ -41,8 +41,82 @@ make ci                       ci to check linting and run tests
 - [ ] Implement/TDD search engine
 - [ ] Implement/TDD cli
 
-- [ ] OPT: Explore Data encoding alternatives: `protobuf`, `avro` (avro_turf / avro gems) -> I recently contributed to an OSS project `avro_turf` for data encoding managed by a `ZenDeski` engineer -> https://github.com/dasch/avro_turf/pull/194#event-10218602164
+- [ ] OPT: Explore Data encoding alternatives: `protobuf`, `avro` (avro_turf / avro gems) -> I recently contributed to an OSS project `avro_turf` for data encoding -> https://github.com/dasch/avro_turf/pull/194#event-10218602164
 - [x] OPT: GitHub Actions CI/CD
 - [ ] Consider multi-column index
 - [ ] OPT: Deploy
 - [ ] OPT: Linting - return to default Rubocop settings
+
+## SearchEngine performance: O(n) vs O(logn) vs O(1) considerations
+
+- O(n) - simple Ruby `filter`, `select` would work, but challange requires non linear performance
+- O(logn) - consider implementing binary search / tree data structures for data. might be too convoluted to implement
+- O(1) - create indexes for constant time access at the cost of storage. seems like the best approach if we create a HashMap index, which will be the fastest / O(1)
+
+## Index using [`HashMap` algorithm](https://en.wikipedia.org/wiki/Hash_table)
+
+Adobted to archieve O(1) performance for search engine
+## Index using [`Trie` algorithm](https://en.wikipedia.org/wiki/Trie)
+
+Some data can be also indexd as `tries`, which is more space efficient than `HashMap`
+i.e. `Time` (implemented):
+```sh
+2023y -> 09m -> 01d -> 15h -> 43m -> 12s
+                           -> 48m -> 12s
+      -> 15m -> 01d -> 19h -> 43m -> 12s
+             -> 02d -> 18h -> 43m -> 12s
+                    -> 19h -> 43m -> 12s
+             -> 03d -> 15h -> 43m -> 12s
+                           -> 51m -> 12s
+2022y -> 12m -> 01d -> 15h -> 43m -> 12s
+```
+
+or `URL` (not yet implemented):
+```sh
+`https` -> `domain_2nd_lvl` -> `.com_domain_1st_level` -> `/sub_pages` -> `ref`
+        -> `another_2ndlvl` -> `.far_domain_1st_level` -> `/sub_pages` -> `ref`
+                                                       -> `/about_bus` -> `ref`
+                                                       -> `/send_some` -> `bus`
+                                                       -> `/send_some` -> `abs`
+`http`  -> `domain_2nd_lvl` -> `.com_domain_1st_level` -> `/sub_pages` -> `ref`
+```
+
+## Design and Strategy discussion
+
+Since we handle data pipelines/queries, functional flavoured approach might work well.
+Haskel / Rust Monads might be the best fit Haskel / Rust Monads might be the best fit.
+
+### Design patterns considered
+
+https://refactoring.guru/design-patterns
+
+- Command Pattern (Behaviour)
+    - https://refactoring.guru/design-patterns/command
+    - Dry Transaction is a command pattern
+- Decorator Pattern (Structural Pattern)
+    - https://refactoring.guru/design-patterns/decorator
+- Factory Pattern for generating Models
+    - https://refactoring.guru/design-patterns/factory-method
+- Repository Pattern to act as a middleware between DB Data and search engine
+
+## App Components:
+
+- `App` - main entry point
+- `Loaders` - data loaders for CLI, SearchEngine and Error wrapper. IO Interface
+    - `CLI`
+    - `SearchEngine`
+    - `UI Errors wrapper / interface`
+- `Errors` - custom errors
+
+- `SearchEngine` - search engine with index lookup
+- `Services` - Services for Fetching Schema and DB generation
+- `Parsers` - Data Parsers used by SearchEngine to parse various Data types incl a separate parser for `Time`. Return `Some(type)` or `None`
+- `Validators` - data validator used by Search Engine to check if search term input is part of searchable params and is correct type (i.e. Time string for `Time`, Integers for `_id`, etc)
+
+- `Models` - main models used as an [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) interface
+    - `User`, `Ticket`, `Organization`
+    - `DataBase` - data storage with lookup by `_id` and recursive `Trie` traversal
+- `Repo` - data access layer used by Search Engine and abstarcting low level logic. (Ideally I wanted to have a Repo per user, org, ticket, etc, but that seemed convoluted, too dry and required extra time)
+
+- `Decorators` - data decorators for models that can be used to display data in a user friendly way, rewrtiting default Ruby `to_s` method used in `puts`
+- `Renderer` - STDOUT Printer used by App

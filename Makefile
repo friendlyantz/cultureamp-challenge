@@ -22,7 +22,7 @@ test:
 
 .PHONY: run
 run:
-	bundle exec ruby ./bin/survey-tool
+	bundle exec ruby ./bin/run
 
 .PHONY: lint
 lint:

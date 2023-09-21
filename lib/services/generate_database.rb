@@ -14,7 +14,6 @@ module Services
           @database = Services::Database.new
 
           input.each do |record, csv_data|
-            # parsed_csv_data = CSV.parse(csv_data, headers: true)
             parsed_csv_data = csv_data
 
             schema = get_schema!(schema_getter, record)
