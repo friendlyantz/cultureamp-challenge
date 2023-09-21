@@ -1,12 +1,4 @@
-# Survey Tool - Ruby
-
-Welcome to the Ruby starter kit for the survey tool exercise!
-
-Included here is a simple CLI executable, a `lib/cli.rb` to hold the beginnings of your
-application logic, plus an RSpec installation and a single failing integration test, which
-should help you drive the beginning of your implementation.
-
-## Development
+# Installation and Usage 
 
 `ruby 3.2.2` is required as per `Gemfile` spec
 
@@ -46,6 +38,14 @@ make ci                       ci to check linting and run tests
 - [ ] Consider multi-column index
 - [ ] OPT: Deploy
 - [ ] OPT: Linting - return to default Rubocop settings
+
+# Dev Notes
+
+UNIX style approach to CLI tool design to enable leveraging `GNU Parallel` / etc if required:
+
+![image](https://github.com/friendlyantz/zendesk-challenge/assets/70934030/5153b245-210c-4829-a5ee-57d04bbbe4f8)
+
+Inspired by [what makes a good CLI tool](https://friendlyantz.me/learning/2023-08-25-what-makes-a-good-cli-tool/)
 
 ## SearchEngine performance: O(n) vs O(logn) vs O(1) considerations
 
@@ -99,6 +99,9 @@ https://refactoring.guru/design-patterns
     - https://refactoring.guru/design-patterns/factory-method
 - Repository Pattern to act as a middleware between DB Data and search engine
 
+![image](https://github.com/friendlyantz/cultureamp-challenge/assets/70934030/1025e45a-3d06-4e08-9c9e-d64982e78832)
+
+
 ## App Components:
 
 - `App` - main entry point
@@ -116,7 +119,101 @@ https://refactoring.guru/design-patterns
 - `Models` - main models used as an [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) interface
     - `User`, `Ticket`, `Organization`
     - `DataBase` - data storage with lookup by `_id` and recursive `Trie` traversal
-- `Repo` - data access layer used by Search Engine and abstarcting low level logic. (Ideally I wanted to have a Repo per user, org, ticket, etc, but that seemed convoluted, too dry and required extra time)
+- `Repo` - data access layer used by Search Engine and abstarcting low level logic.
 
 - `Decorators` - data decorators for models that can be used to display data in a user friendly way, rewrtiting default Ruby `to_s` method used in `puts`
 - `Renderer` - STDOUT Printer used by App
+
+
+## Misc / Libraries and Gems used
+
+### RSpec - testing framework
+
+### ReadLine gem vs standard `.gets` method
+
+I tried to implement autocomplete functionality using `ReadLine` gem.
+
+https://rubyapi.org/3.2/o/readline#method-c-completion_proc-3D
+
+But using standard `STDOUT.gets('result')` seems to be more reliable and easier to implement and test, but lack auto-completion proc 
+### Zeitwerk
+
+- Zeitwerk autoloader - works well with normal Ruby and supports dry-rb [since late 2022](https://dry-rb.org/news/2022/10/17/dry-rb-adopts-zeitwerk-for-code-loading/)
+
+### Monads / Dry-rb
+
+Monads heavily used in func languages like Rust && Haskell, but Ruby `dry` library can archive similar performance with much simpler Ruby syntax.
+
+Insbired by [RailsConf 2021 Denver - Dry Monads](https://www.youtube.com/watch?app=desktop&v=YXiqzHMmv_o)
+
+# DEMO
+
+## loaders
+
+```sh
+make run
+bundle exec ruby ./bin/run
+Loading data...
+Finished loading data!
+Initializing application...
+Finished initializing application!
+==================================
+Welcome to CultureAmp Search
+Press '1' to search for surveys
+Type 'exit' to exit anytime
+```
+
+## Select column to lookup
+```sh
+Select search option to search surveys with:
+_______________________
+Press 1 for....Email 
+Press 2 for....Employee Id
+Press 3 for....Submission time
+Press 4 for....I like the kind of work I do.
+Press 5 for....In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective.
+Press 6 for....We are working at the right pace to meet our goals.
+Press 7 for....I feel empowered to get the work done for which I am responsible.
+Press 8 for....I am appropriately involved in decisions that affect my work.
+Press 9 for....employee_id
+Press 10 for...submitted_at
+_______________________
+or just enter search term:
+
+```
+
+## Search sesults
+
+```sh
+Enter search value:
+4
+Found 2 search results.
+===================================
+* Survey for Employee 2
+Email ............................................................................................................................ 
+Employee Id....................................................................................................................... 2
+Submission time................................................................................................................... 2014-07-29T07:05:41+00:00
+I like the kind of work I do...................................................................................................... 4
+In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective. 5
+We are working at the right pace to meet our goals................................................................................ 5
+I feel empowered to get the work done for which I am responsible.................................................................. 3
+I am appropriately involved in decisions that affect my work...................................................................... 3
+employee_id....................................................................................................................... 
+submitted_at...................................................................................................................... 
+--- Submitter:
+===================================
+* Survey for Employee 5
+Email ............................................................................................................................ 
+Employee Id....................................................................................................................... 5
+Submission time................................................................................................................... 2014-07-31T11:35:41+00:00
+I like the kind of work I do...................................................................................................... 4
+In general, I have the resources (e.g., business tools, information, facilities, IT or functional support) I need to be effective. 5
+We are working at the right pace to meet our goals................................................................................ 5
+I feel empowered to get the work done for which I am responsible.................................................................. 2
+I am appropriately involved in decisions that affect my work...................................................................... 3
+employee_id....................................................................................................................... 
+submitted_at...................................................................................................................... 
+--- Submitter:
+Search again?: y/n
+
+```
